@@ -5,7 +5,7 @@
 This manual documents the workflow developed to extract noncollinear Spin-Orbit Coupling (SOC) Hamiltonians from FHI-aims localized atomic orbital outputs and process them into the block-sparse format utilized by the DeepH machine learning ecosystem. It covers the necessary modifications to the Fortran source code of FHI-aims to expose the spatial SOC $\Pi$ matrices, the mathematical reconstruction and Hermiticity constraints of the full $2N \times 2N$ complex Hamiltonian, and the automated Python parsing strategies, including both a modified DeepH extraction tool and a standalone scripting route, used to validate the workflow.
 
 ** Note, many of the large data files (1 to 100 Mb) have been removed from subfolders in 2D_materials_data and script_testing**
-The fhi-aims input and output files remain, you can download this data from this google drive [link][https://drive.google.com/drive/folders/1yTdpTZTUzZfQPgaFflXPxZ62OjL_5pU3?usp=sharing]
+The fhi-aims input and output files remain, you can download this data from this google drive [link](https://drive.google.com/drive/folders/1yTdpTZTUzZfQPgaFflXPxZ62OjL_5pU3?usp=sharing)
 Once downloaded, merge the folders without overwriting and you will have the data from my own testing.
 
 ## Table of Contents
