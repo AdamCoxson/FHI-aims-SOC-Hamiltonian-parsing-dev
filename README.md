@@ -7,6 +7,8 @@ This manual documents the workflow developed to extract noncollinear Spin-Orbit 
 ** Note, many of the large data files (1 to 100 Mb) have been removed from subfolders in 2D_materials_data and script_testing**
 The fhi-aims input and output files remain, you can download this data from this google drive [link](https://drive.google.com/drive/folders/1yTdpTZTUzZfQPgaFflXPxZ62OjL_5pU3?usp=sharing). Once downloaded, merge the folders without overwriting and you will have the data from my own testing.
 
+This package provides everything needed to reproduce, validate, and utilize the FHI-aims to DeepH SOC data pipeline.
+
 ## Table of Contents
 
 1. FHI-aims SOC Extraction and DeepH Workflow Development (Pg 2)
@@ -31,40 +33,40 @@ The fhi-aims input and output files remain, you can download this data from this
    - Route 1: "The DeepH Way
    - Route 2: "The Alternative Way"
 
-# FHI-aims SOC Extraction and DeepH Workflow Development
+# 1. FHI-aims SOC Extraction and DeepH Workflow Development
 
 **This instruction file will cover**:
 - The Directory Layout.
 - Building a modified FHI-aims with SOC Hamiltonian file dumping.
 - How to run a simulation workflow to reproduce MoS2 results.
 
-## Directory Layout
+## 1.1. Directory Layout
 
 The workspace is organized into several key subdirectories:
 
-### 1. `md_files/` (Documentation)
+### `md_files/` (Documentation)
 Contains in-depth markdown documentation explaining the physics, methodology, and modifications made throughout this project.
 - **modified_deeph_code_for_SOC.md**: Details modifications to DeepH's parser for SOC.
 - **compare_parsers_methodology.md**: Explains how the DeepH-based parsing route was mathematically verified against an explicit custom Python parser.
 - **extract_realspace_soc.md**: A guide on how the real-space SOC Hamiltonian ($\Pi$ matrix) is identified, dumped from FHI-aims, and processed in Python.
 - **full_workflow_summary.md**: A comprehensive overview of the full pipeline (from Fortran source code to HDF5 tensors).
 
-### 2. `modified_source_files/` (FHI-aims Source Modifications)
+### `modified_source_files/` (FHI-aims Source Modifications)
 Contains the specific Fortran files modified within FHI-aims to support SOC extraction.
 - `calculate_second_variational_soc.f90`: The patched source file that natively dumps the three spatial components of the SOC operator ($\pi_x, \pi_y, \pi_z$) to `realspace_soc_matrix.out` alongside standard scalar Hamiltonians.
 - `ReadMe.txt`: Notes pertaining to the FHI-aims source patches.
 
-### 3. `DeepH_soc_process/` (DeepH Conversion Scripts)
+### `DeepH_soc_process/` (DeepH Conversion Scripts)
 Contains the production-ready python parsers designed to ingest FHI-aims outputs and convert them into the block-sparse format utilized by DeepH.
 - `aims_soc_to_deeph.py`: The modified DeepH extraction tool capable of handling the noncollinear $2N \times 2N$ complex SOC Hamiltonian.
 - `run_aims_soc_to_deeph.py`: An execution wrapper to run the extraction locally.
 
-### 4. `script_testing/` (Validation and Unit Tests)
+### `script_testing/` (Validation and Unit Tests)
 A dedicated testing suite verifying that matrix parsing and mathematical reconstruction (including Hermiticity and Parity constraints) are perfectly maintained.
 - `compare_parsers.py`: Compares the output of `aims_soc_to_deeph.py` against a custom mathematical script (`build_soc_hamiltonian.py`) to ensure 100% numerical consistency.
 - `unit_tests/`: Pytest suite to rigorously validate the parser logic and matrix parity constraints (`symm_signs`).
 
-### 5. `2D_materials_data/` (Automated Test Workflows)
+### `2D_materials_data/` (Automated Test Workflows)
 End-to-end Python automation scripts (`run_workflow_unitcell.py`) and associated data evaluating SOC properties on canonical 2D materials. These scripts:
 - Perform structural relaxations (e.g., `relaxation_light`).
 - Evaluate Spin-Orbit Coupling single points (e.g., `soc_intermediate`).
@@ -72,14 +74,14 @@ End-to-end Python automation scripts (`run_workflow_unitcell.py`) and associated
 
 See the two directories for graphene and MoS2. I used clims to plot the band structures and obviously MoS2 has non-negligible SOC effects. These tests are only a unit cell so it runs quite quickly.
 
-## Making a modified FHI-aims build with SOC Hamiltonian dumping.
+## 1.2. Making a modified FHI-aims build with SOC Hamiltonian dumping.
 Go to `.../FHIaims_SOC_extract_dev/modified_source_files` and you will see a modified version of `calculate_second_variational_soc.f90` and a `ReadMe.txt` showing the
 relevant code block and how to modify the source code.
 
 - Make a copy of you current FHI-aims directory for development, and substitute this file into src/soc.
 - Use cmake and make to form a new FHI-aims build with the modified source code.
 
-## Simulation to reproduce MoS2 results.
+## 1.3. Simulation to reproduce MoS2 results.
 - Create a relevant environment
 Environment dependences: ASE, pyfhiaims, deephdock (python 3.12 or higher), pytest (for unit tests in another file checking hermicity)
 
@@ -120,23 +122,15 @@ python DeepH_soc_process/run_aims_soc_to_deeph.py
 
 - This will create a new directory called `.../FHIaims_SOC_extract_dev/2D_materials_data/MoS2_reproduce/deepH_files`
 
-
-
-
-## Summary
-
-This package provides everything needed to reproduce, validate, and utilize the FHI-aims to DeepH SOC data pipeline. For an in-depth understanding of the mathematical operations involved, refer to the documentation inside `md_files/`.
-
-
 ---
 
-# Full workflow summary.
+# 2. Full workflow summary.
 
 This document details the pipeline developed to extract noncollinear Spin-Orbit Coupling (SOC) Hamiltonians from FHI-aims and seamlessly process them into the DeepH machine learning ecosystem.
 
 ---
 
-## 1. Modification of the FHI-aims Fortran Source Code
+## 2.1. Modification of the FHI-aims Fortran Source Code
 
 In standard periodic Density Functional Theory (DFT) calculations using FHI-aims, Spin-Orbit Coupling is typically applied perturbatively or self-consistently onto the localized atomic orbital (LAO) basis. To utilize these matrices for machine learning, we needed raw access to the underlying spatial real-space components of the SOC operator before the generalized eigenvalue solver diagonalizes the system. Consequently, we modified the FHI-aims Fortran source code to actively dump these operator matrices during the real-space integration phase. 
 
@@ -147,7 +141,7 @@ Specifically, alongside the standard real-space scalar Hamiltonian ($H_{scalar}$
 
 which are written to a new output file called `realspace_soc_matrix.out`.
 
-## 2. Automating the Test Case (`run_workflow_unitcell.py`)
+## 2.2. Automating the Test Case (`run_workflow_unitcell.py`)
 
 **Note, you must edit the paths and directories in `run_workflow_unitcell.py` to suit your system.**
 
@@ -159,7 +153,7 @@ To validate the modified Fortran code, a Python automation script (`2D_materials
 4. **Data Extraction**: During this final noncollinear subroutine, the hardcoded Fortran block we introduced is actively triggered, prompting FHI-aims to physically dump the relevant SOC and scalar matrices to the working directory.
 
 
-## 3. Dumping the Real-Space Hamiltonians
+## 2.3. Dumping the Real-Space Hamiltonians
 
 Once a calculation concludes, the FHI-aims working directory contains the necessary raw outputs:
 - **`rs_indices.out`**: Defines the sparse non-zero elements, mapping them to specific basis functions (orbitals) and spatial displacement vectors ($\mathbf{R}$).
@@ -169,7 +163,7 @@ Once a calculation concludes, the FHI-aims working directory contains the necess
 
 Because these are evaluated on a strictly localized, non-orthogonal atomic orbital basis, the matrices reflect the raw generalized eigenvalue problem $HC = SCE$. 
 
-## 4. DeepH Based Processing (`aims_soc_to_deeph.py`)
+## 2.4. DeepH Based Processing (`aims_soc_to_deeph.py`)
 
 DeepH requires the Hamiltonian to be formatted as a complex, $2N \times 2N$ block-sparse tensor stored in chunked `.h5` files. To make this compatible we copied and adapted the DeepH data translator, `aims_to_deeph.py`, to form `aims_soc_to_deeph.py`, which now acts as a standalone parser for FHI-aims SOC Hamiltonians.
 
@@ -210,11 +204,11 @@ Note, these are named `hamiltonian.h5` and `hamiltonian0.h5` in the original Dee
 
 ---
 
-# Extraction of the Real-Space SOC Hamiltonian ($\Pi$ Matrix)
+# 3. Extraction of the Real-Space SOC Hamiltonian ($\Pi$ Matrix)
 
 The real-space SOC Hamiltonian is calculated before being transformed into the state-space basis. This matrix is referred to as the $\Pi$ matrix in the literature, and in the FHI-aims source code, it is represented by the variable `soc_matrix`. This document details how this matrix was extracted and dumped to a file for later post-processing (e.g., using Python) as part of our ML Hamiltonian workflow.
 
-## 1. Extraction Location
+## 3.1. Extraction Location
 
 The $\Pi$ matrix is allocated and constructed in the main SOC driver routine in the FHI-aims codebase:
 **File:** `soc_source/calculate_second_variational_soc.f90`
@@ -232,7 +226,7 @@ The extraction logic was added directly after the following subroutine call (aro
 
 Directly after this call, the `soc_matrix` variable contains the compressed real-space SOC Hamiltonian. The dump was placed here before any subsequent rotation (e.g., by `rotate_Pi_columns` if `calculate_mae` is true).
 
-## 2. Format of `soc_matrix`
+## 3.2. Format of `soc_matrix`
 
 `soc_matrix` is a 2D array allocated as:
 `real*8, dimension(ld_soc_matrix, 3) :: soc_matrix`
@@ -240,7 +234,7 @@ Directly after this call, the `soc_matrix` variable contains the compressed real
 - **First dimension (`ld_soc_matrix`)**: Represents the packed pairs of basis functions. Because the Hamiltonian matrix is highly sparse in real-space, FHI-aims packs the non-zero matrix elements into a contiguous 1D array per operator. `ld_soc_matrix` is either `n_hamiltonian_matrix_size` (full size) or `batch_perm(n_bp_integ)%n_local_matrix_size` (if load balancing is used).
 - **Second dimension (`3`)**: Represents the three spatial coordinates ($x, y, z$) of the spin-orbit coupling operator.
 
-## 3. Implementation of the Matrix Dump
+## 3.3. Implementation of the Matrix Dump
 
 To dump this matrix, an unformatted (binary) write statement was injected to handle the large matrix efficiently. 
 
@@ -270,7 +264,7 @@ The write statement was restricted to a single MPI task (`myid == 0`), assuming 
   ! -----------------------
 ```
 
-## 4. Reading the Matrix in Python
+## 3.4. Reading the Matrix in Python
 
 The unformatted (binary) dump is loaded into Python using `scipy.io.FortranFile` during post-processing. Because it is dumped as a compressed vector of overlapping basis pairs, the sparsity pattern array is required to map it back to basis pairs. The formatted dump is also performed and this file is utilised in the down stream tasks in the example workflows.
 
@@ -310,7 +304,7 @@ Pi_z = soc_data[:, 2]
 print(f"Loaded formatted SOC matrix of shape: {soc_data.shape}")
 ```
 
-## 5. Integration and Hamiltonian Construction
+## 3.5. Integration and Hamiltonian Construction
 
 The parsing of the dumped `soc_matrix` can be performed using two methods within this workflow: via a modified **DeepH Dock** or using a standalone Python script (`build_soc_hamiltonian.py`).
 
@@ -351,11 +345,11 @@ Unit testing using `pytest` has confirmed that when the 3-channel matrix is pack
 
 ---
 
-# DeepH Hamiltonian Processing Overview
+# 4. DeepH Hamiltonian Processing Overview
 
 This document provides a high-level overview of how DeepH processes Hamiltonians from FHI-aims outputs, and details the specific modifications made to the original parser to support Noncollinear Spin-Orbit Coupling (SOC).
 
-## How DeepH Processes Hamiltonians
+## 4.1. How DeepH Processes Hamiltonians
 
 DeepH uses a data processing pipeline to map real-space data from density functional theory (DFT) codes into its sparse HDF5 format. The workflow for parsing Hamiltonians follows these general steps:
 
@@ -367,7 +361,7 @@ DeepH uses a data processing pipeline to map real-space data from density functi
 
 Our customized noncollinear SOC parser (`aims_soc_to_deeph.py`) builds upon this pipeline by introducing explicit Pauli tensor algebra while preserving the internal mapping logic of DeepH.
 
-## Change Log: `aims_soc_to_deeph.py` vs `aims_to_deeph.py`
+## 4.2. Change Log: `aims_soc_to_deeph.py` vs `aims_to_deeph.py`
 
 The following modifications were made to the original DeepH dock parser (`aims_to_deeph.py`) to create the SOC variant (`aims_soc_to_deeph.py`), ensuring the $2N \times 2N$ complex SOC Hamiltonian is extracted and reconstructed.
 
@@ -405,7 +399,7 @@ The following modifications were made to the original DeepH dock parser (`aims_t
 
 ---
 
-# Methodology: Two Routes to DeepH Sparse HDF5
+# 5. Methodology: Two Routes to DeepH Sparse HDF5
 
 The `compare_parsers.py` script validates our noncollinear spin-orbit coupling (SOC) extraction process by constructing the identical $2N \times 2N$ complex block-sparse Hamiltonian using two independent scripts: the modified DeepH Dock functions and standalone `build_soc_hamiltonian.py` script.
 
