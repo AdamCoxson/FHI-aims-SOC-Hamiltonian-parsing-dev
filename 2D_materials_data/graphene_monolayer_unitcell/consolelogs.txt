@@ -1,0 +1,37 @@
+(fhiaims) lacoxson@jhworkstation:~/work/fhi-tutorial/fhi-soc-testing/monolayer_unitcell_light$ python /home/lacoxson/work/fhi-tutorial/fhi-soc-testing/monolayer_unitcell_light/run_workflow_unitcell.py
+
+Starting FHI-aims workflow using 28 cores.
+
+Setting up relaxation...
+-> Initialization & Setup finished in 0.00 seconds.
+
+Running relaxation...
+Relaxation finished.
+-> Relaxation Run finished in 0.78 seconds.
+
+Copied hessian.aims to soc and nosoc directories.
+/home/lacoxson/miniconda3/envs/fhiaims/lib/python3.11/site-packages/pyfhiaims/geometry/geometry.py:654: UserWarning: Won't overwrite species for C
+  warnings.warn(f"Won't overwrite species for {sym}", stacklevel=1)
+-> SOC/No-SOC Input Prep finished in 0.00 seconds.
+
+Running nosoc...
+nosoc finished.
+-> No-SOC Run finished in 24.88 seconds.
+
+Running soc...
+soc finished.
+-> SOC Run finished in 37.11 seconds.
+
+==================================================
+ TIMING SUMMARY
+==================================================
+ Cores Used : 28
+--------------------------------------------------
+ Initialization & Setup   :       0.00 s
+ Relaxation Run           :       0.78 s
+ SOC/No-SOC Prep          :       0.00 s
+ No-SOC Run               :      24.88 s
+ SOC Run                  :      37.11 s
+--------------------------------------------------
+ Total Execution Time     :      62.77 s
+==================================================

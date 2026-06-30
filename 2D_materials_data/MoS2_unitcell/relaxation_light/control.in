@@ -1,0 +1,170 @@
+#===============================================================================
+
+# FHI-aims control file: /home/lacoxson/work/fhi-tutorial/fhi-soc-testing/MoS2_unitcell/relaxation_light/control.in
+
+# Thu Jun 25 17:41:17 2026
+
+#===============================================================================
+xc                                                pbe
+vdw_ts
+relativistic                                      atomic_zora scalar
+k_grid                                            8 8 1
+sc_iter_limit                                     100
+relax_geometry                                    bfgs 5e-3
+relax_unit_cell                                   slab
+#===============================================================================
+
+################################################################################
+#
+#  FHI-aims code project
+#  VB, Fritz-Haber Institut, 2009
+#
+#  Suggested "light" defaults for S atom (to be pasted into control.in file)
+#  Be sure to double-check any results obtained with these settings for post-processing,
+#  e.g., with the "tight" defaults and larger basis sets.
+#
+#  2020/09/08 Added f function to "light" after reinspection of Delta test outcomes.
+#             This was done for all of Al-Cl and is a tricky decision since it makes
+#             "light" calculations measurably more expensive for these elements.
+#             Nevertheless, outcomes for P, S, Cl (and to some extent, Si) appear
+#             to justify this choice.
+#
+################################################################################
+  species               S
+#     global species definitions
+  nucleus               16.0
+  mass                  32.065
+#
+  l_hartree             4
+#
+  cut_pot               3.5 1.5 1.0
+  basis_dep_cutoff      0.0001
+#
+  radial_base    44   5.0000
+  radial_multiplier        1
+  angular_grids  specified
+  division       0.4665  110
+  division       0.5810  194
+  division       0.7139  302
+  outer_grid     302
+##################################################################################
+#
+#  Definition of "minimal" basis
+#
+##################################################################################
+#     valence basis states
+    valence      3  s   2.
+    valence      3  p   4.
+#     ion occupancy
+    ion_occ      3  s   1.
+    ion_occ      3  p   3.
+##################################################################################
+#
+#  Suggested additional basis functions. For production calculations,
+#  uncomment them one after another (the most important basis functions are
+#  listed first).
+#
+#  These were set using pyfhiaims, original may files have additional comments
+#
+##################################################################################
+#  First tier
+             ionic      3  d  auto
+             hydro      2  p  1.8
+             hydro      4  f  7.0
+             ionic      3  s  auto
+#  Second tier
+#            hydro      4  d  6.2
+#            hydro      5  g  10.8
+#            hydro      4  p  4.9
+#            hydro      5  f  10.0
+#            hydro      1  s  0.8
+#  Third tier
+#            hydro      3  d  3.9
+#            hydro      3  d  2.7
+#            hydro      5  g  12.0
+#            hydro      4  p  10.4
+#            hydro      5  f  12.4
+#            hydro      2  s  1.9
+#  Fourth tier
+#            hydro      4  d  10.4
+#            hydro      4  p  7.2
+#            hydro      4  d  10.0
+#            hydro      5  g  19.2
+#            hydro      4  s  12.0################################################################################
+#
+#  FHI-aims code project
+#  VB, Fritz-Haber Institut, 2009
+#
+#  Suggested "light" defaults for Mo atom (to be pasted into control.in file)
+#  Be sure to double-check any results obtained with these settings for post-processing,
+#  e.g., with the "tight" defaults and larger basis sets.
+#
+################################################################################
+  species               Mo
+#     global species definitions
+  nucleus               42.0
+  mass                  95.94
+#
+  l_hartree             4
+#
+  cut_pot               3.5 1.5 1.0
+  basis_dep_cutoff      0.0001
+#
+  radial_base    59   5.0000
+  radial_multiplier        1
+  angular_grids  specified
+  division       0.4847   50
+  division       0.9168  110
+  division       1.2280  194
+  division       1.6402  302
+  outer_grid     302
+##################################################################################
+#
+#  Definition of "minimal" basis
+#
+##################################################################################
+#     valence basis states
+    valence      5  s   1.
+    valence      4  p   6.
+    valence      4  d   5.
+#     ion occupancy
+    ion_occ      5  s   0.
+    ion_occ      4  p   6.
+    ion_occ      4  d   4.
+##################################################################################
+#
+#  Suggested additional basis functions. For production calculations,
+#  uncomment them one after another (the most important basis functions are
+#  listed first).
+#
+#  These were set using pyfhiaims, original may files have additional comments
+#
+##################################################################################
+#  First tier
+             hydro      4  f  8.4
+             hydro      3  d  2.8
+             ionic      5  p  auto
+#            hydro      5  g  12.0
+             ionic      5  s  auto
+#  Second tier
+#            hydro      4  f  12.4
+#            hydro      3  d  3.3
+#            hydro      6  h  17.2
+#            hydro      4  f  7.6
+#            hydro      3  p  3.0
+#            hydro      1  s  0.65
+#  Third tier
+#            hydro      4  f  29.2
+#            hydro      5  g  11.2
+#            hydro      3  d  6.8
+#            hydro      6  h  14.8
+#            hydro      2  p  2.3
+#            hydro      4  s  3.8
+#  Fourth tier
+#            hydro      5  f  6.8
+#            hydro      5  d  14.8
+#            hydro      6  s  7.8
+#            hydro      5  g  20.8
+#            hydro      5  d  10.4
+#            hydro      5  p  9.8
+#            hydro      5  d  3.2

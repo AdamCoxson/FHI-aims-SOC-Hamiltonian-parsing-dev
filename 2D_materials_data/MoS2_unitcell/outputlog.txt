@@ -1,0 +1,40 @@
+(fhiaims) lacoxson@jhworkstation:~/work/fhi-tutorial/fhi-soc-testing/MoS2_unitcell$ python /home/lacoxson/work/fhi-tutorial/fhi-soc-testing/MoS2_unitcell/run_workflow_unitcell.py
+
+Starting FHI-aims workflow using 28 cores.
+
+Setting up relaxation...
+-> Initialization & Setup finished in 0.00 seconds.
+
+Running relaxation...
+Relaxation finished.
+-> Relaxation Run finished in 24.29 seconds.
+
+Copied hessian.aims to soc and nosoc directories.
+/home/lacoxson/miniconda3/envs/fhiaims/lib/python3.11/site-packages/pyfhiaims/geometry/geometry.py:654: UserWarning: Won't overwrite species for S
+  warnings.warn(f"Won't overwrite species for {sym}", stacklevel=1)
+/home/lacoxson/miniconda3/envs/fhiaims/lib/python3.11/site-packages/pyfhiaims/geometry/geometry.py:654: UserWarning: Won't overwrite species for Mo
+  warnings.warn(f"Won't overwrite species for {sym}", stacklevel=1)
+-> SOC/No-SOC Input Prep finished in 0.01 seconds.
+
+Running nosoc...
+nosoc finished.
+-> No-SOC Run finished in 16.10 seconds.
+
+Running soc...
+soc finished.
+-> SOC Run finished in 20.88 seconds.
+
+==================================================
+ TIMING SUMMARY
+==================================================
+ Cores Used : 28
+--------------------------------------------------
+ Initialization & Setup   :       0.00 s
+ Relaxation Run           :      24.29 s
+ SOC/No-SOC Prep          :       0.01 s
+ No-SOC Run               :      16.10 s
+ SOC Run                  :      20.88 s
+--------------------------------------------------
+ Total Execution Time     :      61.27 s
+==================================================
+
